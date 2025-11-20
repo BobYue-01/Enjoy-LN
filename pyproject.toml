@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "enjoyln"
+version = "0.1.0"
+description = "Enjoy Your Layer Normalization with the Computation Efficiency of RMSNorm"
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=2.2",
+    "transformers>=4.34",
+    "matplotlib",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
