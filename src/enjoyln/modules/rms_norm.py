@@ -12,7 +12,7 @@ def native_rms_norm_forward(
 ) -> torch.Tensor:
     return torch.rms_norm(
         x, self.normalized_shape, self.weight, self.eps
-    ) + self.bias
+    )
 
 
 def rms_norm_forward(
@@ -45,6 +45,7 @@ if __name__ == '__main__':
     torch.cuda.empty_cache()
 
     import argparse
+    import time
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--embed_dim', type=int, default=768)
@@ -83,6 +84,16 @@ if __name__ == '__main__':
 
     replace_layer_norm_forward(model.norm, forward_fn=native_rms_norm_forward)
 
+    for _ in range(1000):
+        model(x)
+
+    start_time = time.time()
+    for _ in range(1000):
+        model(x)
+        torch.cuda.synchronize()
+    end_time = time.time()
+    print(f"Native RMSNorm time: {end_time - start_time} seconds")
+
     with profile(
         activities=[
             ProfilerActivity.CPU, ProfilerActivity.CUDA
@@ -101,6 +112,16 @@ if __name__ == '__main__':
         print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
     replace_layer_norm_forward(model.norm, forward_fn=rms_norm_forward)
+
+    for _ in range(1000):
+        model(x)
+
+    start_time = time.time()
+    for _ in range(1000):
+        model(x)
+        torch.cuda.synchronize()
+    end_time = time.time()
+    print(f"RMSNorm time: {end_time - start_time} seconds")
 
     with profile(
         activities=[

@@ -89,6 +89,7 @@ Results are saved in `results/verification/<model_name>/`.
 > ```bash
 > python exps/verification.py --use_fast_rms --hidden_size 120   # hidden_size > 120 may cause error spikes
 > ```
+>
 > We are actively investigating the cause of the kernel-level numerical instability and will provide an updated kernel once the issue is fully diagnosed. This does not influence the primary results or conclusions presented in the paper.
 
 ### 2. Comparing speed
